@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Excel Audit Challenge</title>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2c5282;
+            --excel-green: #217346;
+            --excel-light: #8cc84b;
+            --accent: #ed8936;
+            --success: #38a169;
+            --danger: #e53e3e;
+            --warning: #d69e2e;
+            --bg-light: #f8fafc;
+            --border: #e2e8f0;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #2d3748;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 30px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, #ffffff 0%, #f7fafc 100%);
+            border: 1px solid #e2e8f0;
+            position: relative;
+            overflow: hidden;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, var(--excel-green), var(--excel-light));
+        }
+        .header h1 {
+            color: var(--excel-green);
+            font-size: 3rem;
+            margin-bottom: 10px;
+            font-weight: 800;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .header h1 span {
+            color: var(--excel-light);
+        }
+        .header p {
+            color: var(--secondary);
+            font-size: 1.3rem;
+            max-width: 800px;
+            margin: 0 auto 20px;
+            opacity: 0.9;
+        }
+        .excel-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            display: inline-block;
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border);
+            border-top: 5px solid var(--excel-green);
+            position: relative;
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+            border-top-color: var(--excel-light);
+        }
+        .card h2 {
+            color: var(--excel-green);
+            font-size: 1.6rem;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .card h2::before {
+            content: '📊';
+            font-size: 1.8rem;
+        }
+        .card.section-10 h2::before { content: '🔍'; }
+        .card.section-11 h2::before { content: '🧮'; }
+        .card.section-12 h2::before { content: '🔗'; }
+        .card.section-13 h2::before { content: '📈'; }
+        .card.section-14 h2::before { content: '🔤'; }
+        .card.section-15 h2::before { content: '📅'; }
+        
+        .ice-breaker {
+            background: linear-gradient(135deg, #e6fffa, #b2f5ea);
+            border: 2px solid var(--success);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        .ice-breaker::before {
+            content: '💬';
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            border: 2px solid var(--success);
+            font-size: 1.2rem;
+        }
+        .ice-breaker h3 {
+            color: var(--success);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        .discussion-points {
+            background: rgba(255,255,255,0.7);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid var(--accent);
+        }
+        .discussion-points h4 {
+            color: var(--accent);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .discussion-points h4::before {
+            content: '💡';
+        }
+        .mcq-question {
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 2px solid var(--border);
+            transition: all 0.3s ease;
+        }
+        .mcq-question:hover {
+            border-color: var(--excel-light);
+            background: #f0fff4;
+        }
+        .mcq-question h3 {
+            color: var(--secondary);
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            line-height: 1.5;
+            padding-left: 10px;
+            border-left: 4px solid var(--primary);
+        }
+        .mcq-question h3 .question-number {
+            background: var(--excel-green);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-right: 10px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .option {
+            padding: 18px 20px 18px 55px;
+            background: white;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            font-size: 1rem;
+        }
+        .option:hover {
+            border-color: var(--excel-light);
+            background: #f7fff9;
+            transform: translateX(5px);
+        }
+        .option.selected {
+            border-color: var(--success);
+            background: #f0fff4;
+            box-shadow: 0 3px 10px rgba(56, 161, 105, 0.2);
+        }
+        .option.incorrect {
+            border-color: var(--danger);
+            background: #fff5f5;
+        }
+        .option::before {
+            content: '';
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--border);
+            border-radius: 6px;
+            background: white;
+            transition: all 0.2s ease;
+        }
+        .option.selected::before {
+            background: var(--success);
+            border-color: var(--success);
+            content: '✓';
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .option.incorrect::before {
+            background: var(--danger);
+            border-color: var(--danger);
+            content: '✗';
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .explanation {
+            margin-top: 25px;
+            padding: 20px;
+            background: #ebf8ff;
+            border-radius: 10px;
+            border-left: 4px solid #4299e1;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .explanation.show {
+            display: block;
+        }
+        .explanation h4 {
+            color: #2b6cb0;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+        .explanation h4::before {
+            content: '🎯';
+        }
+        .formula-box {
+            background: var(--primary);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            margin: 10px 0;
+            border-left: 4px solid var(--excel-light);
+            font-size: 0.95rem;
+            overflow-x: auto;
+        }
+        .audit-tip {
+            background: #fffaf0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 4px solid var(--warning);
+        }
+        .audit-tip h5 {
+            color: var(--warning);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .audit-tip h5::before {
+            content: '⚠️';
+        }
+        .stats-panel {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 40px auto;
+            max-width: 800px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 2px solid var(--excel-green);
+        }
+        .stats-panel h2 {
+            color: var(--excel-green);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        .score-display {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--excel-green);
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .progress-container {
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 6px;
+            overflow: hidden;
+            margin: 25px 0;
+        }
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--excel-green), var(--excel-light));
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 6px;
+        }
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 25px;
+        }
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--excel-green), var(--excel-light));
+            color: white;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(33, 115, 70, 0.3);
+        }
+        .btn-secondary {
+            background: white;
+            color: var(--excel-green);
+            border: 2px solid var(--excel-green);
+        }
+        .btn-secondary:hover {
+            background: var(--excel-green);
+            color: white;
+            transform: translateY(-2px);
+        }
+        .timer {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 12px 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            font-weight: bold;
+            color: var(--excel-green);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            border: 2px solid var(--excel-light);
+        }
+        .timer::before {
+            content: '⏱️';
+            font-size: 1.2rem;
+        }
+        .category-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            background: var(--excel-light);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        @media (max-width: 768px) {
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            .timer {
+                position: static;
+                margin: 0 auto 20px;
+                width: fit-content;
+            }
+            .controls {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="timer" id="timer">00:00</div>
+    
+    <div class="container">
+        <div class="header">
+            <div class="excel-icon">📊</div>
+            <h1>Advanced Excel <span>Audit Challenge</span></h1>
+            <p>Test your Excel mastery with these audit-focused MCQs and scenarios!</p>
+            <div class="stats-panel">
+                <h2>Your Audit Excel Score</h2>
+                <div class="score-display" id="score">0/30</div>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progress"></div>
+                </div>
+                <p id="performanceText">Start the challenge to test your skills!</p>
+                <div class="controls">
+                    <button class="btn btn-primary" onclick="resetQuiz()">
+                        <span>🔄</span> Reset Challenge
+                    </button>
+                    <button class="btn btn-secondary" onclick="showAllExplanations()">
+                        <span>📚</span> Show All Answers
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-grid">
+            
+            <!-- SECTION 10: LOGICAL FORMULAS -->
+            <div class="card section-10">
+                <h2>Section 10: Logical Formulas <span class="category-tag">IF, AND, OR</span></h2>
+                
+                <div class="ice-breaker">
+                    <h3>The Weekend Posting Dilemma</h3>
+                    <p>You discover 15 high-value transactions posted on weekends. The CFO says "It's just year-end closing." What audit procedures would you perform?</p>
+                    <div class="discussion-points">
+                        <h4>Group Discussion Starters:</h4>
+                        <ul>
+                            <li>What Excel formula would flag these transactions?</li>
+                            <li>How would you document your testing approach?</li>
+                            <li>What additional evidence would you request?</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="mcq-question">
+                    <h3><span class="question-number">1</span> Which formula correctly flags transactions that are BOTH over KES 200,000 AND posted on weekends?</h3>
+                    <div class="options">
+                        <div class="option" onclick="selectAnswer(this, 'A')" data-correct="C">
+                            A) =IF(F2>200000, "High", IF(WEEKDAY(J2)>5, "Weekend", "OK"))
+                        </div>
+                        <div class="option" onclick="selectAnswer(this, 'B')" data-correct="C">
+                            B) =OR(F2>200000, WEEKDAY(J2)>5)
+                        </div>
+                        <div class="option" onclick="selectAnswer(this, 'C')" data-correct="C">
+                            C) =IF(AND(F2>200000, WEEKDAY(J2,2)>5), "⚠️ Review", "OK")
+                        </div>
+                        <div class="option" onclick="selectAnswer(this, 'D')" data-correct="C">
+                            D) =AND(F2>200000, WEEKDAY(J2)>5)
+                        </div>
+                    </div>
+                    <div class="explanation">
+                        <h4>Correct Answer Analysis:</h4>
+                        <div class="formula-box">=IF(AND(F2>200000, WEEKDAY(J2,2)>5), "⚠️ Review", "OK")</div>
+                        <p><strong>Why it's correct:</strong> AND() checks BOTH conditions, IF() returns meaningful label, WEEKDAY(...,2) treats Monday=1 (best for audit).</p>
+                        <div class="audit-tip">
+                            <h5>Audit Application:</h5>
+                            <p>Use this in journal entry testing to automatically flag high-risk transactions. The "⚠️ Review" label creates clear audit trail for follow-up testing.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mcq-question">
+                    <h3><span class="question-number">2</span> You need to test completeness: flag transactions missing EITHER vendor OR department. Best formula?</h3>
+                    <div class="options">
+                        <div class="option" onclick="selectAnswer(this, 'A')" data-correct="B">
+                            A) =IF(ISBLANK(M2), "Missing", IF(ISBLANK(E2), "Missing", "Complete"))
+                        </div>
+                        <div class="option" onclick="selectAnswer(this, 'B')" data-correct="B">
+                            B) =IF(OR(ISBLANK(M2), ISBLANK(E2)), "❌ Incomplete", "✓ Complete")
+                        </div>
+                        <div class="option" onclick="selectAnswer(this, 'C')" data-correct="B">
+                            C) =AND(NOT(ISBLANK(M2)), NOT(ISBLANK(E2)))
+                        </div>
+                        <div class="option" onclick="selectAnswer(this, 'D')" data-correct="B">
+                            D) =IF(M2="" & E2="", "Missing", "OK")
+                        </div>
+                    </div>
+                    <div class="explanation">
+                        <h4>Completeness Testing Formula:</h4>
+                        <div class="formula-box">=IF(OR(ISBLANK(M2), ISBLANK(E2)), "❌ Incomplete", "✓ Complete")</div>
+                        <p><strong>Key Points:</strong> OR() checks EITHER condition, ISBLANK() is more robust than ="" for empty cells, visual indicators (❌/✓) help review.</p>
+                        <div class="audit-tip">
+                            <h5>Audit Assertion:</h5>
+                            <p>This tests the <strong>Completeness</strong> assertion. Count incomplete records with: <code>=COUNTIF(range,"❌ Incomplete")</code></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 11: MATH FORMULAS -->
+            <div class="card section-11">
+                <h2>Section 11: Math Formulas <span class="category-tag">SUMIFS, SUMPRODUCT</span></h2>
+                
+                <div class="ice-breaker">
+                    <h3>The Mysterious Round Numbers</h3>
+                    <p>During analytical review, you notice 47 transactions at exact KES 100,000 amounts. The Finance Director says "They're budget allocations." How would you investigate?</p>
+                    <div class="discussion-points">
+                        <h4>Investigation Questions:</h4>
+                        <ul>
+                            <li>What Excel function detects round numbers?</li>
+                            <li>How would you calculate the percentage of round-number transactions?</li>
+                            <li>What supporting documentation would you examine?</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mcq-question">
+                    <h3><span class="question-number">3</span> You need total "Salaries & Wages" for "Academics" department in Q2 2024. Best formula?</h3>
+                    <div class="options">
+                        <div class="option" onclick="selectAnswer(this, 'A')" data-correct="C">
+                            A) =SUMIFS(F:F, C:C, "Salaries", E:E, "Academics")
+                        </div>
+                        <div class="option" onclick="selectAnswer(this, 'C')" data-correct="C">
+                            B) =SUMIF(C:C, "Salaries", F:F) + SUMIF(E:E, "Academics", F:F)
+                        </div>
+                        <div class="option" onclick="selectAnswer(this, 'C')" data-correct="C">
+                            C) =SUMIFS(F:F, C:C, "Salaries & Wages", E:E, "Academics", B:B, ">="&DATE(2024,4,1), B:B, "<="&DATE(2024,6,30))
+                        </div>
+                        <div class="option" onclick="selectAnswer(this, 'D')" data-correct="C">
+                            D) =SUMPRODUCT((C:C="Salaries")*(E:E="Academics")*(F:F))
+                        </div>
+                    </div>
+                    <div class="explanation">
+                        <h4>SUMIFS with Date Range:</h4>
+                        <div class="formula-box">=SUMIFS(F:F, C:C, "Salaries & Wages", E:E, "Academics", B:B, ">="&DATE(2024,4,1), B:B, "<="&DATE(2024,6,30))</div>
+                        <p><strong>Why it's best:</strong> SUMIFS handles multiple criteria including date ranges efficiently. Using DATE() function ensures correct date handling.</p>
+                        <div class="audit-tip">
+                            <h5>Cut-off Testing:</h5>
+                            <p>This formula is essential for period-end cut-off testing. Compare Q2 results to trial balance and investigate differences > materiality.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mcq-question">
+                    <h3><span class="question-number">4</span> You need to select a random sample of 30 transactions for testing. Best approach?</h3>
+                    <div class="options">
+                        <div class="option" onclick="selectAnswer(this, 'A')" data-correct="B">
+                            A) Manually pick every 67th transaction (2000/30)
+                        </div>
+                        <div class="option" onclick="selectAnswer(this, 'B')" data-correct="B">
+                            B) Add =RAND() column, sort, select top 30
+                        </div>
+                        <div class="option" onclick="selectAnswer(this, 'C')" data-correct="B">
+                            C) Use =RANDBETWEEN(1,2000) 30 times
+                        </div>
+                        <div class="option" onclick="selectAnswer(this, 'D')" data-correct="B">
+                            D) Filter for amounts > average and select first 30
+                        </div>
+                    </div>
+                    <div class="explanation">
+                        <h4>Statistical Sampling Method:</h4>
+                        <div class="formula-box">Steps:<br>1. Add column: =RAND()<br>2. Copy → Paste Values (to freeze)<br>3. Sort by random column<br>4. Select first 30 rows</div>
+                        <p><strong>Audit Standard:</strong> This provides statistically valid random sample as required by audit standards (ISA 530).</p>
+                        <div class="audit-tip">
+                            <h5>Critical Step:</h5>
+                            <p>ALWAYS "Paste Values" after =RAND(), otherwise sample changes every time Excel recalculates!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 12: LOOKUP FORMULAS -->
+            <div class="card section-12">
+                <h2>Section 12: Lookup Formulas <span class="category-tag">XLOOKUP, INDEX/MATCH</span></h2>
+                
+                <div class="ice-breaker">
+                    <h3>The Missing Vendor Master</h3>
+                    <p>420 transactions have vendor names not in the master vendor list. AP Manager says "They're new vendors being processed." What's your audit response?</p>
+                    <div class="discussion-points">
+                        <h4>Control Evaluation:</h4>
+                        <ul>
+                            <li>What Excel lookup would identify these?</li>
+                            <li>What control weakness does this indicate?</li>
+                            <li>How would you test the new vendor approval process?</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mcq-question">
+                    <h3><span class="question-number">5</span> You need to get account_type from Chart_of_Accounts. Which is MOST audit-safe?</h3>
+                    <div class="options">
+                        <div class="option" onclick="selectAnswer(this, 'A')" data-correct="C">
+                            A) =VLOOKUP(C2, Chart_of_Accounts!A:C, 3, TRUE)
+                        </div>
+                        <div class="option" onclick="selectAnswer(this, 'B')" data-correct="C">
+                            B) =VLOOKUP(C2, Chart_of_Accounts!B:D, 2, FALSE)
+                        </div>
+                        <div class="option" onclick="selectAnswer(this, 'C')" data-correct="C">
+                            C) =XLOOKUP(C2, Chart_of_Accounts!B:B, Chart_of_Accounts!D:D, "INVALID ACCOUNT")
+                        </div>
+                        <div class="option" onclick="selectAnswer(this, 'D')" data-correct="C">
+                            D) =INDEX(Chart_of_Accounts!D:D, MATCH(C2, Chart_of_Accounts!B:B))
+                        </div>
+                    </div>
+                    <div class="explanation">
+                        <h4>XLOOKUP Advantages:</h4>
+                        <div class="formula-box">=XLOOKUP(C2, Chart_of_Accounts!B:B, Chart_of_Accounts!D:D, "INVALID ACCOUNT")</div>
+                        <p><strong>Audit Benefits:</strong> 
+                        1. Built-in error handling ("INVALID ACCOUNT")<br>
+                        2. No column numbers (safer when sheets change)<br>
+                        3. Can look left or right<br>
+                        4. Default exact match (safer than VLOOKUP's TRUE)</p>
+                        <div class="audit-tip">
+                            <h5>Control Testing:</h5>
+                            <p>Count "INVALID ACCOUNT" results: <code>=COUNTIF(range,"INVALID ACCOUNT")</code>. High count indicates chart of accounts control failure.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mcq-question">
+                    <h3><span class="question-number">6</span> You need to find department_code when you have department_name. VLOOKUP can't work because code is LEFT of name. Solution?</h3>
+                    <div class="options">
+                        <div class="option" onclick="selectAnswer(this, 'A')" data-correct="B">
+                            A) Reorder columns so code is right of name
+                        </div>
+                        <div class="option" onclick="selectAnswer(this, 'B')" data-correct="B">
+                            B) =INDEX(Departments!A:A, MATCH(E2, Departments!B:B, 0))
+                        </div>
+                        <div class="option" onclick="selectAnswer(this, 'C')" data-correct="B">
+                            C) Use HLOOKUP instead
+                        </div>
+                        <div class="option" onclick="selectAnswer(this, 'D')" data-correct="B">
+                            D) =VLOOKUP(E2, Departments!B:A, 2, FALSE)
+                        </div>
+                    </div>
+                    <div class="explanation">
+                        <h4>INDEX/MATCH for Left Lookups:</h4>
+                        <div class="formula-box">=INDEX(Departments!A:A, MATCH(E2, Departments!B:B, 0))</div>
+                        <p><strong>How it works:</strong> MATCH finds position of department_name in column B, INDEX returns value from same position in column A (code).</p>
+                        <div class="audit-tip">
+                            <h5>Audit Application:</h5>
+                            <p>Use for mapping data between systems (GL codes to system codes). Combine with IFERROR for clean results: <code>=IFERROR(INDEX(...),"MAPPING ERROR")</code></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 13: STATISTICAL & TEXT -->
+            <div class="card section-13">
+                <h2>Sections 13-14: Statistical & Text <span class="category-tag">AVERAGEIF, TEXT</span></h2>
+                
+                <div class="ice-breaker">
+                    <h3>The Suspicious Salary Pattern</h3>
+                    <p>Academics department average salary is KES 145,000, but you find 7 employees earning exactly KES 250,000. HR says "They're senior lecturers." How to analyze?</p>
+                    <div class="discussion-points">
+                        <h4>Analytical Procedures:</h4>
+                        <ul>
+                            <li>What statistical function identifies outliers?</li>
+                            <li>How would you calculate standard deviation?</li>
+                            <li>What follow-up procedures would you perform?</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mcq-question">
+                    <h3><span class="question-number">7</span> You need to flag salaries >2 standard deviations from mean for investigation. Formula?</h3>
+                    <div class="options">
+                        <div class="option" onclick="selectAnswer(this, 'A')" data-correct="C">
+                            A) =IF(F2 > AVERAGE(F:F)*2, "OUTLIER", "OK")
+                        </div>
+                        <div class="option" onclick="selectAnswer(this, 'C')" data-correct="C">
+                            B) =IF(F2 - AVERAGE(F:F) > STDEV(F:F), "OUTLIER", "OK")
+                        </div>
+                        <div class="option" onclick="selectAnswer(this, 'C')" data-correct="C">
+                            C) =IF(ABS(F2 - AVERAGE(F:F)) > 2*STDEV.P(F:F), "OUTLIER", "OK")
+                        </div>
+                        <div class="option" onclick="selectAnswer(this, 'D')" data-correct="C">
+                            D) =IF(F2 > PERCENTILE(F:F, 0.95), "OUTLIER", "OK")
+                        </div>
+                    </div>
+                    <div class="explanation">
+                        <h4>Outlier Detection Formula:</h4>
+                        <div class="formula-box">=IF(ABS(F2 - AVERAGE(F:F)) > 2*STDEV.P(F:F), "OUTLIER", "OK")</div>
+                        <p><strong>Components:</strong> ABS() checks deviation in either direction, 2*STDEV.P() = 2 standard deviations (captures ~95% of normal data).</p>
+                        <div class="audit-tip">
+                            <h5>Analytical Procedure:</h5>
+                            <p>Outliers don't equal errors, but warrant investigation. Document testing: "Tested salaries >2σ from mean. Investigated 7 exceptions, found 2 unauthorized increases."</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mcq-question">
+                    <h3><span class="question-number">8</span> You need to extract username from email (before "@") for user activity analysis. Best formula?</h3>
+                    <div class="options">
+                        <div class="option" onclick="selectAnswer(this, 'A')" data-correct="C">
+                            A) =LEFT(L2, 5)
+                        </div>
+                        <div class="option" onclick="selectAnswer(this, 'B')" data-correct="C">
+                            B) =FIND("@", L2)
+                        </div>
+                        <div class="option" onclick="selectAnswer(this, 'C')" data-correct="C">
+                            C) =LEFT(L2, FIND("@", L2)-1)
+                        </div>
+                        <div class="option" onclick="selectAnswer(this, 'D')" data-correct="C">
+                            D) =MID(L2, 1, "@")
+                        </div>
+                    </div>
+                    <div class="explanation">
+                        <h4>Text Extraction Formula:</h4>
+                        <div class="formula-box">=LEFT(L2, FIND("@", L2)-1)</div>
+                        <p><strong>How it works:</strong> FIND("@", L2) returns position of @, -1 excludes @, LEFT() extracts characters up to that position.</p>
+                        <div class="audit-tip">
+                            <h5>Audit Application:</h5>
+                            <p>Standardize usernames for segregation of duties testing: <code>=LOWER(LEFT(L2, FIND("@", L2)-1))</code> ensures "JSmith" and "jsmith" are treated as same user.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 15: DATE & TIME -->
+            <div class="card section-15">
+                <h2>Section 15: Date & Time <span class="category-tag">NETWORKDAYS, DATEDIF</span></h2>
+                
+                <div class="ice-breaker">
+                    <h3>The Delayed Posting Mystery</h3>
+                    <p>83 transactions take >10 business days from transaction date to posting date. Accountant says "System delays during month-end." How to evaluate control effectiveness?</p>
+                    <div class="discussion-points">
+                        <h4>Control Testing Approach:</h4>
+                        <ul>
+                            <li>What date function calculates posting delay?</li>
+                            <li>How would you categorize delays (0-3 days, 4-7 days, etc.)?</li>
+                            <li>What would excessive delays indicate about internal controls?</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mcq-question">
+                    <h3><span class="question-number">9</span> You need to calculate business days between transaction date (B2) and posting date (J2), excluding weekends. Formula?</h

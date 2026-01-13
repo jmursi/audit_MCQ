@@ -380,6 +380,19 @@
             color: white;
             transform: translateY(-2px);
         }
+        .btn-toggle {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            position: sticky;
+            top: 20px;
+            z-index: 1000;
+            margin: 0 auto 20px;
+            display: block;
+        }
+        .btn-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
         .timer {
             position: fixed;
             top: 20px;
@@ -410,6 +423,10 @@
             font-weight: 600;
             margin-left: 10px;
         }
+        .toggle-container {
+            text-align: center;
+            margin: 20px 0 40px;
+        }
         @media (max-width: 768px) {
             .card-grid {
                 grid-template-columns: 1fr;
@@ -425,6 +442,10 @@
             .controls {
                 flex-direction: column;
             }
+            .btn-toggle {
+                position: static;
+                margin: 0 auto 20px;
+            }
         }
     </style>
 </head>
@@ -436,6 +457,11 @@
             <div class="excel-icon">📊</div>
             <h1>Advanced Excel <span>Audit Challenge</span></h1>
             <p>Test your Excel mastery with these audit-focused MCQs and scenarios!</p>
+            <div class="toggle-container">
+                <button class="btn btn-toggle" onclick="toggleAllAnswers()">
+                    <span>👁️</span> Toggle All Answers
+                </button>
+            </div>
             <div class="stats-panel">
                 <h2>Your Audit Excel Score</h2>
                 <div class="score-display" id="score">0/30</div>
@@ -551,7 +577,7 @@
                         <div class="option" onclick="selectAnswer(this, 'A')" data-correct="C">
                             A) =SUMIFS(F:F, C:C, "Salaries", E:E, "Academics")
                         </div>
-                        <div class="option" onclick="selectAnswer(this, 'C')" data-correct="C">
+                        <div class="option" onclick="selectAnswer(this, 'B')" data-correct="C">
                             B) =SUMIF(C:C, "Salaries", F:F) + SUMIF(E:E, "Academics", F:F)
                         </div>
                         <div class="option" onclick="selectAnswer(this, 'C')" data-correct="C">
@@ -699,7 +725,7 @@
                         <div class="option" onclick="selectAnswer(this, 'A')" data-correct="C">
                             A) =IF(F2 > AVERAGE(F:F)*2, "OUTLIER", "OK")
                         </div>
-                        <div class="option" onclick="selectAnswer(this, 'C')" data-correct="C">
+                        <div class="option" onclick="selectAnswer(this, 'B')" data-correct="C">
                             B) =IF(F2 - AVERAGE(F:F) > STDEV(F:F), "OUTLIER", "OK")
                         </div>
                         <div class="option" onclick="selectAnswer(this, 'C')" data-correct="C">
@@ -766,4 +792,191 @@
                 </div>
 
                 <div class="mcq-question">
-                    <h3><span class="question-number">9</span> You need to calculate business days between transaction date (B2) and posting date (J2), excluding weekends. Formula?</h
+                    <h3><span class="question-number">9</span> You need to calculate business days between transaction date (B2) and posting date (J2), excluding weekends. Formula?</h3>
+                    <div class="options">
+                        <div class="option" onclick="selectAnswer(this, 'A')" data-correct="B">
+                            A) =J2 - B2
+                        </div>
+                        <div class="option" onclick="selectAnswer(this, 'B')" data-correct="B">
+                            B) =NETWORKDAYS(B2, J2)
+                        </div>
+                        <div class="option" onclick="selectAnswer(this, 'C')" data-correct="B">
+                            C) =NETWORKDAYS.INTL(B2, J2, 1)
+                        </div>
+                        <div class="option" onclick="selectAnswer(this, 'D')" data-correct="B">
+                            D) =WORKDAY(B2, J2)
+                        </div>
+                    </div>
+                    <div class="explanation">
+                        <h4>Business Days Calculation:</h4>
+                        <div class="formula-box">=NETWORKDAYS(B2, J2)</div>
+                        <p><strong>Why it's correct:</strong> NETWORKDAYS automatically excludes Saturdays and Sundays. Option C uses NETWORKDAYS.INTL which is more flexible but the basic version works for standard weekends.</p>
+                        <div class="audit-tip">
+                            <h5>Control Testing Application:</h5>
+                            <p>Use with conditional formatting to highlight delays >10 days: <code>=NETWORKDAYS(B2, J2)>10</code>. High counts indicate possible cut-off issues or delayed recognition.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mcq-question">
+                    <h3><span class="question-number">10</span> You need to calculate aging categories (Current, 1-30 days, 31-60 days, 61+ days) for receivables. Best formula?</h3>
+                    <div class="options">
+                        <div class="option" onclick="selectAnswer(this, 'A')" data-correct="C">
+                            A) =IF(TODAY()-B2<=30, "Current", "Overdue")
+                        </div>
+                        <div class="option" onclick="selectAnswer(this, 'B')" data-correct="C">
+                            B) =DATEDIF(B2, TODAY(), "d")
+                        </div>
+                        <div class="option" onclick="selectAnswer(this, 'C')" data-correct="C">
+                            C) =IF(TODAY()-B2<=30, "Current", IF(TODAY()-B2<=60, "31-60", IF(TODAY()-B2<=90, "61-90", "91+")))
+                        </div>
+                        <div class="option" onclick="selectAnswer(this, 'D')" data-correct="C">
+                            D) =TODAY() - B2
+                        </div>
+                    </div>
+                    <div class="explanation">
+                        <h4>Aging Bucket Formula:</h4>
+                        <div class="formula-box">=IF(TODAY()-B2<=30, "Current", IF(TODAY()-B2<=60, "31-60", IF(TODAY()-B2<=90, "61-90", "91+")))</div>
+                        <p><strong>Nested IF logic:</strong> Checks from smallest range to largest. Alternative: use IFS() function in newer Excel versions for cleaner syntax.</p>
+                        <div class="audit-tip">
+                            <h5>Audit Significance:</h5>
+                            <p>Aging analysis tests the <strong>Valuation</strong> assertion. Higher aging categories typically require higher allowance for doubtful accounts. Test mathematical accuracy with: <code>=SUMIF(aging_range,"91+",amount_range)</code></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Quiz state
+        let score = 0;
+        let totalQuestions = 10;
+        let answersVisible = false;
+        let selectedAnswers = new Array(totalQuestions).fill(null);
+        let startTime = new Date();
+        
+        // Initialize timer
+        function updateTimer() {
+            const now = new Date();
+            const diff = Math.floor((now - startTime) / 1000);
+            const minutes = Math.floor(diff / 60).toString().padStart(2, '0');
+            const seconds = (diff % 60).toString().padStart(2, '0');
+            document.getElementById('timer').textContent = `${minutes}:${seconds}`;
+        }
+        setInterval(updateTimer, 1000);
+        
+        // Answer selection
+        function selectAnswer(option, answerLetter) {
+            const question = option.closest('.mcq-question');
+            const options = question.querySelectorAll('.option');
+            const questionNumber = parseInt(question.querySelector('.question-number').textContent);
+            const correctAnswer = option.getAttribute('data-correct');
+            
+            // Clear previous selections
+            options.forEach(opt => {
+                opt.classList.remove('selected', 'incorrect');
+            });
+            
+            // Mark selected option
+            option.classList.add('selected');
+            
+            // Mark correct/incorrect
+            if (answerLetter === correctAnswer) {
+                option.classList.add('selected');
+                score++;
+            } else {
+                option.classList.add('incorrect');
+                // Highlight correct answer
+                options.forEach(opt => {
+                    if (opt.textContent.trim().startsWith(correctAnswer + ')')) {
+                        opt.classList.add('selected');
+                    }
+                });
+            }
+            
+            // Store answer
+            selectedAnswers[questionNumber - 1] = answerLetter;
+            
+            // Update score
+            updateScore();
+            
+            // Show explanation
+            const explanation = question.querySelector('.explanation');
+            explanation.classList.add('show');
+        }
+        
+        // Update score display
+        function updateScore() {
+            document.getElementById('score').textContent = `${score}/${totalQuestions}`;
+            const percentage = (score / totalQuestions) * 100;
+            document.getElementById('progress').style.width = `${percentage}%`;
+            
+            // Performance text
+            const performanceText = document.getElementById('performanceText');
+            if (score === 0) {
+                performanceText.textContent = "Start the challenge to test your skills!";
+            } else if (score <= totalQuestions * 0.5) {
+                performanceText.textContent = "Keep practicing! Review the explanations to improve.";
+            } else if (score <= totalQuestions * 0.8) {
+                performanceText.textContent = "Good job! You're getting the hang of audit Excel skills.";
+            } else {
+                performanceText.textContent = "Excellent! You're an Excel audit pro!";
+            }
+        }
+        
+        // Toggle all answers
+        function toggleAllAnswers() {
+            const explanations = document.querySelectorAll('.explanation');
+            const toggleBtn = document.querySelector('.btn-toggle span');
+            
+            answersVisible = !answersVisible;
+            
+            if (answersVisible) {
+                explanations.forEach(exp => exp.classList.add('show'));
+                toggleBtn.textContent = '🙈';
+                document.querySelector('.btn-toggle').innerHTML = '<span>🙈</span> Hide All Answers';
+            } else {
+                explanations.forEach(exp => exp.classList.remove('show'));
+                toggleBtn.textContent = '👁️';
+                document.querySelector('.btn-toggle').innerHTML = '<span>👁️</span> Show All Answers';
+            }
+        }
+        
+        // Show all explanations
+        function showAllExplanations() {
+            const explanations = document.querySelectorAll('.explanation');
+            explanations.forEach(exp => exp.classList.add('show'));
+            answersVisible = true;
+            document.querySelector('.btn-toggle').innerHTML = '<span>🙈</span> Hide All Answers';
+        }
+        
+        // Reset quiz
+        function resetQuiz() {
+            score = 0;
+            selectedAnswers.fill(null);
+            startTime = new Date();
+            
+            // Clear all selections
+            document.querySelectorAll('.option').forEach(option => {
+                option.classList.remove('selected', 'incorrect');
+            });
+            
+            // Hide all explanations
+            document.querySelectorAll('.explanation').forEach(exp => {
+                exp.classList.remove('show');
+            });
+            
+            // Reset toggle button
+            answersVisible = false;
+            document.querySelector('.btn-toggle').innerHTML = '<span>👁️</span> Show All Answers';
+            
+            // Update display
+            updateScore();
+        }
+        
+        // Initialize
+        updateScore();
+    </script>
+</body>
+</html>
